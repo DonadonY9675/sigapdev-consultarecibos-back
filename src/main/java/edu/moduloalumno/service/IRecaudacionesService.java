@@ -37,9 +37,13 @@ public interface IRecaudacionesService {
 
 	int updateRecaudaciones(Recaudaciones recaudaciones);	
 
-	void updateRecaudaciones(int idRec, String codAlum, int idProg);	
+	void updateRecaudaciones(int idRec, String codAlum, Integer idProg);	
 	
 	int updateRecaudaciones(List<Recaudaciones> reacaudacionesList);
 
 	void deleteRecaudaciones(int idRecaudaciones);
+	
+	//agregado por miguel
+	List<Recaudaciones> getRecaudacionesPendiengesEntreFechas(Date fechaInicial, Date fechaFinal);
+	List<Recaudaciones> getRecaudacionesPorNombre(String nombresApellido);
 }

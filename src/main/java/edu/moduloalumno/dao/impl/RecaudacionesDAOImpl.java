@@ -27,9 +27,13 @@ public class RecaudacionesDAOImpl implements IRecaudacionesDAO {
 	public int updateRecaudaciones(Recaudaciones reacaudaciones) {return 0;}
 
 	@Override
-	public void updateRecaudaciones(int idRec, String codAlum, int idProg) {
+	public void updateRecaudaciones(int idRec, String codAlum, Integer idProg) {
+		
 		String sql = "UPDATE recaudaciones SET cod_alumno = ?, id_programa = ? WHERE id_rec = ?";
-		jdbcTemplate.update(sql, codAlum, idProg, idRec);
+		String sql2 = "UPDATE recaudaciones SET cod_alumno = "+codAlum+", id_programa = "+idProg+" WHERE id_rec = "+idRec;
+		System.out.println(sql2);
+		int i =jdbcTemplate.update(sql, codAlum, idProg, idRec);
+		System.out.println("Se modificaron " + i + " filas");
 	}
 
 	@Override
@@ -37,6 +41,7 @@ public class RecaudacionesDAOImpl implements IRecaudacionesDAO {
 
 	@Override
 	public List<Recaudaciones> getAllRecaudaciones() {
+		
 		String sql = "SELECT id_rec, moneda, numero, importe, carnet, autoseguro, ave, devol_tran, observacion, fecha, validado, id_alum, id_concepto, id_registro, cod_alumno, id_programa, id_ubicacion, id_tipo FROM recaudaciones";		
 		RowMapper<Recaudaciones> rowMapper = new RecaudacionesRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper);
@@ -128,29 +133,108 @@ public class RecaudacionesDAOImpl implements IRecaudacionesDAO {
 
 	@Override
 	public List<Recaudaciones> getRecaudacionReci(String recibo) {
-		String sql = "select " +
-		"r.id_rec,  " +
-		"r.id_alum,  " +
-		"a.ape_nom,  " +
-		"c.concepto, " +
-		"a.dni,  " +
-		"r.numero,  " +
-		"f.nombre,  " +
-		"r.moneda, " +
-		"r.importe,  " +
-		"r.fecha,  " +
-		"r.cod_alumno as codAlum, " +
-		"r.id_programa as idProg   " +
-		"from recaudaciones r,  " +
-		"alumno a,  " +
-		"concepto c,  " +
-		"facultad f  " +
-		"where  (r.numero = (?))  " +
-		"and (r.id_alum = a.id_alum)  " +
-		"and (r.id_concepto = c.id_concepto)  " +
-		"and (a.id_facultad = f.id_facultad) ";  
+		String sql = "select " + 
+				"r.id_rec,  " + 
+				"r.id_alum,  " + 
+				"a.ape_nom,  " + 
+				"c.concepto, " + 
+				"a.dni,  " + 
+				"r.numero,  " + 
+				"f.nombre,  " + 
+				"r.moneda, " + 
+				"r.importe,  " + 
+				"r.fecha,  " + 
+				"r.cod_alumno as codAlum, " + 
+				"p.id_programa as idProg,   " + 
+				"p.sigla_programa as siglaProg "+
+				"from recaudaciones r " + 
+				"join alumno a on (r.id_alum = a.id_alum) " + 
+				"join concepto c on (r.id_concepto = c.id_concepto) " + 
+				"join facultad f on (a.id_facultad = f.id_facultad) " + 
+				"left join programa p on (p.id_programa = r.id_programa) " + 
+				"where  (r.numero = (?))  " + 
+				"order by r.id_concepto, r.fecha";
+		
+//		String sql = "select " +
+//		"r.id_rec,  " +
+//		"r.id_alum,  " +
+//		"a.ape_nom,  " +
+//		"c.concepto, " +
+//		"a.dni,  " +
+//		"r.numero,  " +
+//		"f.nombre,  " +
+//		"r.moneda, " +
+//		"r.importe,  " +
+//		"r.fecha,  " +
+//		"r.cod_alumno as codAlum, " +
+//		"r.id_programa as idProg   " +
+//		"from recaudaciones r,  " +
+//		"alumno a,  " +
+//		"concepto c,  " +
+//		"facultad f  " +
+//		"where  (r.numero = (?))  " +
+//		"and (r.id_alum = a.id_alum)  " +
+//		"and (r.id_concepto = c.id_concepto)  " +
+//		"and (a.id_facultad = f.id_facultad) "+
+//		"order by r.id_concepto, r.fecha";  
 		
 		RowMapper<Recaudaciones> rowMapper = new RecaudacionesRowMapper();
 		return this.jdbcTemplate.query(sql, rowMapper, recibo);
 	}	
+	
+	@Override
+	public List<Recaudaciones> getRecaudacionesPendiengesEntreFechas(Date fechaInicial, Date fechaFinal) {
+		
+		String sql = "select " +
+				"r.id_rec,  " +
+				"r.id_alum,  " +
+				"a.ape_nom,  " +
+				"c.concepto, " +
+				"a.dni,  " +
+				"r.numero,  " +
+				"f.nombre,  " +
+				"r.moneda, " +
+				"r.importe,  " +
+				"r.fecha,  " +
+				"r.cod_alumno as codAlum, " +
+				"r.id_programa as idProg,  " +
+				"p.sigla_programa as siglaProg "+
+				"from recaudaciones r  " +
+				"join alumno a on (r.id_alum = a.id_alum) " + 
+				"join concepto c on (r.id_concepto = c.id_concepto) " + 
+				"join facultad f on (a.id_facultad = f.id_facultad) " + 
+				"left join programa p on (p.id_programa = r.id_programa) " + 
+				"where (r.fecha between ? and ?) " +
+				"and r.cod_alumno is null " +
+				"order by r.id_concepto, r.fecha";
+		RowMapper<Recaudaciones> rowMapper = new RecaudacionesRowMapper();
+		return this.jdbcTemplate.query(sql, rowMapper, fechaInicial, fechaFinal);
+	}
+	
+	@Override
+	public List<Recaudaciones> getRecaudacionesPorNombre(String nombresApellido) {
+		String sql = "select " + 
+				"r.id_rec,  " + 
+				"r.id_alum,  " + 
+				"a.ape_nom,  " + 
+				"c.concepto, " + 
+				"a.dni,  " + 
+				"r.numero,  " + 
+				"f.nombre,  " + 
+				"r.moneda, " + 
+				"r.importe,  " + 
+				"r.fecha,  " + 
+				"r.cod_alumno as codAlum," + 
+				"r.id_programa as idProg,   " +
+				"p.sigla_programa as siglaProg "+ 
+				"from recaudaciones r  " +
+				"join alumno a on (r.id_alum = a.id_alum) " + 
+				"join concepto c on (r.id_concepto = c.id_concepto) " + 
+				"join facultad f on (a.id_facultad = f.id_facultad) " + 
+				"left join programa p on (p.id_programa = r.id_programa) " + 
+				"where (a.ape_nom like '%'|| ? ||'%') " + 
+				"order by r.id_concepto, r.fecha";
+		RowMapper<Recaudaciones> rowMapper = new RecaudacionesRowMapper();
+		return this.jdbcTemplate.query(sql, rowMapper, nombresApellido);
+	}
 }

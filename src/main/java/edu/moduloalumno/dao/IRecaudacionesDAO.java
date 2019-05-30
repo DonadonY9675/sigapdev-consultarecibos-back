@@ -37,8 +37,11 @@ public interface IRecaudacionesDAO {
 
 	int updateRecaudaciones(Recaudaciones reacaudaciones);
 
-	void updateRecaudaciones(int idRec, String codAlum, int idProg);
+	void updateRecaudaciones(int idRec, String codAlum, Integer idProg);
 	
 	void deleteRecaudaciones(int idRec);
 
+	//agregado por miguel
+	public List<Recaudaciones> getRecaudacionesPendiengesEntreFechas(Date fechaInicial, Date fechaFinal);
+	public List<Recaudaciones> getRecaudacionesPorNombre(String nombresApellido);
 }

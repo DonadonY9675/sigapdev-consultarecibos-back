@@ -28,6 +28,7 @@ public class RecaudacionesServiceImpl implements IRecaudacionesService {
 		return recaudaciones;
 	}
 
+	
 	@Override
 	public List<Recaudaciones> getRecaudacionesByStartDateBetween(Date fechaInicial, Date fechaFinal) {
 
@@ -134,7 +135,7 @@ public class RecaudacionesServiceImpl implements IRecaudacionesService {
 	}
 
 	@Override
-	public void updateRecaudaciones(int idRec, String codAlum, int idProg) {
+	public void updateRecaudaciones(int idRec, String codAlum, Integer idProg) {
 		recaudacionesDAO.updateRecaudaciones(idRec,codAlum,idProg);
 	}
 
@@ -147,6 +148,22 @@ public class RecaudacionesServiceImpl implements IRecaudacionesService {
 	public List<Recaudaciones> getRecaudacionReci(String recibo) {
 		List<Recaudaciones> recaudacionesList = recaudacionesDAO.getRecaudacionReci(recibo);
 		
+		return recaudacionesList;
+	}
+	
+	
+	//agregado por miguel
+	@Override
+	public List<Recaudaciones> getRecaudacionesPendiengesEntreFechas(Date fechaInicial, Date fechaFinal){
+		System.out.println("iNGRESO AL SERVICE");
+		List<Recaudaciones> recaudacionesList = recaudacionesDAO.getRecaudacionesPendiengesEntreFechas(fechaInicial,
+				fechaFinal);
+		return recaudacionesList;
+	}
+	
+	@Override
+	public List<Recaudaciones> getRecaudacionesPorNombre(String nombresApellido){
+		List<Recaudaciones> recaudacionesList = recaudacionesDAO.getRecaudacionesPorNombre(nombresApellido);
 		return recaudacionesList;
 	}
 

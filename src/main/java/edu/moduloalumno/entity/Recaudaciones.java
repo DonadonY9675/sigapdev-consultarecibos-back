@@ -30,6 +30,16 @@ public class Recaudaciones implements Serializable {
     private String codAlum;
 
     private Integer idProg;
+    
+    private String siglaProg;
+    
+    public String getSiglaProg() {
+    	return siglaProg;
+    }
+    
+    public void setSiglaProg(String siglaProg ) {
+    	this.siglaProg = (siglaProg!=null)?siglaProg.trim():siglaProg;
+    }
 
 	public Integer getIdRec() {
 		return idRec;
@@ -129,9 +139,9 @@ public class Recaudaciones implements Serializable {
 	
 	@Override
 	public String toString() {		
-		return "Recaudaciones [idRec=" + idRec + ", idAlum=" + idAlum + ", codAlum=" + codAlum + ", idProg=" + idProg + ", apeNom=" + apeNom + ", concepto=" + concepto
+		return "Recaudaciones [idRec=" + idRec + ", idAlum=" + idAlum + ", codAlum=" + codAlum + ", idProg=" + idProg + ", siglaProg="+siglaProg + ", apeNom=" + apeNom + ", concepto=" + concepto
 				+ ", numero=" + numero + ", dni=" + dni + ", nombre=" + nombre + ", moneda=" + moneda + ", importe="
-				+ importe + ", fecha=" + fecha + "]";
+				+ importe + ", fecha=" + fecha  + "]";
 
 		/*return "Recaudaciones [idRec=" + idRec + ", idAlum=" + idAlum + ", apeNom=" + apeNom + ", concepto=" + concepto
 				+ ", numero=" + numero + ", dni=" + dni + ", nombre=" + nombre + ", moneda=" + moneda + ", importe="
